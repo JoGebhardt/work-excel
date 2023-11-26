@@ -42,8 +42,10 @@ def verarbeite_excel(dateipfad):
             blatt_name = blatt.name
 
             # Blätter überspringen, die nach deutschen Monaten benannt sind
-            if blatt_name in deutsche_monate:
+            if blatt_name not in deutsche_monate:
                 continue
+
+            print(f"Verarbeite Blatt {blatt_name}")
 
             # Durch jede Zeile im Blatt iterieren
             for zeile in blatt.range('A1:P100').rows:  # Bereich nach Bedarf anpassen
@@ -87,12 +89,15 @@ def gui_excel_verarbeitung():
         dateipfad_eingabe.insert(0, dateipfad)
 
     def starte_verarbeitung():
-        dateipfad = dateipfad_eingabe.get()
-        if os.path.exists(dateipfad):
-            verarbeite_excel(dateipfad)
-            status_label.config(text="Verarbeitung abgeschlossen")
-        else:
-            status_label.config(text="Ungültiger Dateipfad")
+        try:
+            dateipfad = dateipfad_eingabe.get()
+            if os.path.exists(dateipfad):
+                verarbeite_excel(dateipfad)  # Assuming this is a function you've defined elsewhere
+                status_label.config(text="Verarbeitung abgeschlossen")
+            else:
+                status_label.config(text="Ungültiger Dateipfad")
+        except Exception as e:
+            status_label.config(text=f"Fehler: {e}")
 
     dateipfad_eingabe = tk.Entry(fenster, width=50)
     dateipfad_eingabe.pack(pady=10)
